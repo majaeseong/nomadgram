@@ -7,6 +7,10 @@ from django.utils.html import mark_safe
 class ImageAdmin(admin.ModelAdmin):
     #pass # it means empty class
     #데코레이터에 의해 자동으로 됨.
+    list_display_links=(
+        'caption',
+    )
+
     list_filter=(
         'creator',
     )

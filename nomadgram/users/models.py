@@ -3,7 +3,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-
 class User(AbstractUser):
     """User Model"""
     # First Name and Last Name do not cover name patterns
@@ -20,6 +19,8 @@ class User(AbstractUser):
     bio = models.TextField( null=True)
     phone = models.CharField(max_length=140, null=True)
     gender = models.CharField(choices=GENDER_CHOICE, max_length=80, null=True)
+    followers = models.ManyToManyField("self")
+    followings = models.ManyToManyField("self")
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

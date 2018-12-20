@@ -12,10 +12,13 @@ class TimestampedModel(models.Model):
 
 class Image(TimestampedModel):
     """ Image Model """
-    file = models.ImageField( upload_to=None, height_field=None, width_field=None, max_length=None)
+    file = models.ImageField()
     location = models.CharField(max_length=140)
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return '{} - {}'.format(self.location, self.caption)
 
 class Comment(TimestampedModel):
     """ Comment Model """
@@ -23,7 +26,14 @@ class Comment(TimestampedModel):
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
     image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.message
+    
+
 class Like(TimestampedModel):
     """ Like Model """
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
     image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return '{} - {}'.format(self.creator.username, self.image.caption)

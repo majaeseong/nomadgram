@@ -15,16 +15,20 @@ class Image(TimestampedModel):
     file = models.ImageField()
     location = models.CharField(max_length=140)
     caption = models.TextField()
-    creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
+    creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True, related_name="images")
 
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
+
+    class Meta:
+        ordering =['-created_at']
+        #날짜순으로 정렬
 
 class Comment(TimestampedModel):
     """ Comment Model """
     message = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, related_name='comments')
 
     def __str__(self):
         return self.message
@@ -33,7 +37,7 @@ class Comment(TimestampedModel):
 class Like(TimestampedModel):
     """ Like Model """
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True)
-    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, related_name='likes')
 
     def __str__(self):
         return '{} - {}'.format(self.creator.username, self.image.caption)

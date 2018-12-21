@@ -26,12 +26,9 @@ class Feed(APIView):
 
 class LikeView(APIView):
 
-    def get(self, request, image_id,format=None):
+    def post(self, request, image_id,format=None):
 
-        try:
-            found_image = models.Image.objects.get(id=image_id)
-        except models.Image.DoesNotExist:
-            return Response(status=404)
+        found_image = invalid_image(image_id)
 
         try:
             preexisting_like = models.Like.objects.get(
@@ -50,3 +47,26 @@ class LikeView(APIView):
             new_like.save()
 
             return Response(status=201)
+
+class CommentOnImage(APIView):
+    def post(slef, request, image_id, format=None):
+
+        try:
+            found_image = invalid_image(image_id)
+        except models.Image.DoesNotExist:
+            return Response(status=404)
+
+        serializer = serializers.CommentSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(creator=request.user, image=found_image)
+            return Response(data = serializer.data ,status=201)
+        else:
+            return Response(data = serializer.errors, status = 400)
+
+def invalid_image(id):
+    try:
+        found_image = models.Image.objects.get(id=id)
+        return found_image
+    except models.Image.DoesNotExist:
+        return Response(status=404)

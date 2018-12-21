@@ -14,7 +14,7 @@ class FeedUserSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
 
     #image = ImageSerializer()
-    creator = FeedUserSerializer()
+    creator = FeedUserSerializer(read_only=True)
 
     class Meta: # Meta is extra data, 설정을 위한 클래스
         model = models.Comment
@@ -52,3 +52,4 @@ class ImageSerializer(serializers.ModelSerializer):
             'like_count',
             'creator'
         )
+

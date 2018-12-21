@@ -70,3 +70,13 @@ def invalid_image(id):
         return found_image
     except models.Image.DoesNotExist:
         return Response(status=404)
+
+
+class Comment(APIView):
+    def delete(self, request, comment_id, format=None):
+        try:
+            comment = models.Comment.objects.get(id=comment_id, creator = request.user)
+            comment.delete()
+            return Response(status=204)
+        except models.Comment.DoesNotExist:
+            return Response(status=404)

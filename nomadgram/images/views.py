@@ -35,9 +35,7 @@ class LikeView(APIView):
                 creator=request.user,
             image = found_image
             )
-            preexisting_like.delete()
-
-            return Response(status=204)
+            return Response(status=304)
 
         except models.Like.DoesNotExist:
             new_like = models.Like.objects.create(
@@ -47,6 +45,22 @@ class LikeView(APIView):
             new_like.save()
 
             return Response(status=201)
+
+class UnLikeView(APIView):
+    def delete(self, request, image_id,format=None):
+        found_image = invalid_image(image_id)
+
+        try:
+            preexisting_like = models.Like.objects.get(
+                creator=request.user,
+            image = found_image
+            )
+            preexisting_like.delete()
+            return Response(status=204)
+
+        except models.Like.DoesNotExist:
+            return Response(status=304)
+
 
 class CommentOnImage(APIView):
     def post(slef, request, image_id, format=None):

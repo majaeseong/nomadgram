@@ -17,6 +17,10 @@ class Image(TimestampedModel):
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.CASCADE, null=True, related_name="images")
 
+    @property #not go database, only in model function
+    def like_count(self):
+        return self.likes.all().count()
+
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
 

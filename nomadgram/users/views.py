@@ -8,7 +8,7 @@ class ExploreUser(APIView):
     def get(self, request, format=None):
         last_five = models.User.objects.all().order_by('-date_joined')[:5]
 
-        serializer = serializers.ExporeUserSerializer(last_five, many=True)
+        serializer = serializers.ListUserSerializer(last_five, many=True)
 
         return Response(data=serializer.data, status=200)
 
@@ -45,3 +45,44 @@ class UnFollowUser(APIView):
         user.save
 
         return Response(status=200)
+
+class UserProfile(APIView):
+
+    def get(self, request, username, format=None):
+
+        try:
+            found_user = models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
+            return Response(status=404)
+
+        serializer = serializers.UserProfileSerializer(found_user)
+
+        return Response(data=serializer.data, status=200)
+
+class UserFollowers(APIView):
+    def get(self, request, username, format=None):
+
+        try:
+            found_user = models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
+            return Response(status=404)
+
+        user_followers = found_user.followers.all()
+
+        serializer = serializers.ListUserSerializer(user_followers, many=True)
+
+        return Response(data=serializer.data, status=200)
+
+class UserFollowings(APIView):
+    def get(self, request, username, format=None):
+
+        try:
+            found_user = models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
+            return Response(status=404)
+
+        user_followings = found_user.followings.all()
+
+        serializer = serializers.ListUserSerializer(user_followings, many=True)
+
+        return Response(data=serializer.data, status=200)

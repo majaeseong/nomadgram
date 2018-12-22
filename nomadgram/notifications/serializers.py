@@ -13,6 +13,5 @@ class NotificationSerializers(serializers.ModelSerializer):
             'creator',
             'to',
             'notification_type',
-            'image'
-
+            'image',
         )

@@ -8,5 +8,6 @@ class NotificationAdmin(admin.ModelAdmin):
         'creator',
         'to',
         'notification_type',
-        'image'
+        'image',
+        'comment'
     )

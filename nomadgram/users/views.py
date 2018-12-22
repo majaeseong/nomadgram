@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from . import models, serializers
+from nomadgram.notifications import views as notification_views
 
 
 class ExploreUser(APIView):
@@ -26,6 +27,9 @@ class FollowUser(APIView):
 
         user.followings.add(following_user)
         user.save
+
+        #notification
+        notification_views.create_notification(user,following_user,'follow')
 
         return Response(status=200)
 

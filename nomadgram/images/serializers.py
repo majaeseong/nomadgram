@@ -2,6 +2,14 @@ from rest_framework import serializers
 from . import models
 from nomadgram.users import models as user_models
 
+class SmallImageSerializer(serializers.ModelSerializer):
+    #use for the notifications app
+    class Meta:
+        model = models.Image
+        fields = (
+            'file',
+        )
+
 class FeedUserSerializer(serializers.ModelSerializer):
     
     class Meta:

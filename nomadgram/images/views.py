@@ -94,3 +94,22 @@ class Comment(APIView):
             return Response(status=204)
         except models.Comment.DoesNotExist:
             return Response(status=404)
+
+class Search(APIView):
+    def get(self, request, format=None):
+
+        hash_tags = request.query_params.get('hashtags',None)
+        
+        if hash_tags is not None:
+            hash_tags = hash_tags.split(',')
+        
+            images= models.Image.objects.filter(tags__name__in=hash_tags).distinct()
+            #deep(nested) relationship
+            # creator__username = admin
+            # creator__username__contains = ad -> 대소문자 구분 icontains -> 구분 X
+
+            serializer = serializers.CountImageSerializer(images, many=True)
+
+            return Response(data = serializer.data, status=200)
+        else :
+            return Response(status=400)

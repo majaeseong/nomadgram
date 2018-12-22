@@ -53,7 +53,7 @@ class ImageSerializer(serializers.ModelSerializer):
             'creator'
         )
 
-class UserProfileImageSerializer(serializers.ModelSerializer):
+class CountImageSerializer(serializers.ModelSerializer):
     #유저 시리얼라이저에서 만들게 되면, 서로 불러오는 서클이 생기기 때문에 여기에 제작
     class Meta:
         model = models.Image

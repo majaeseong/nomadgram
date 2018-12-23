@@ -52,16 +52,43 @@ class UnFollowUser(APIView):
 
 class UserProfile(APIView):
 
-    def get(self, request, username, format=None):
-
+    def find_user(self, username):
         try:
             found_user = models.User.objects.get(username=username)
+            return found_user
         except models.User.DoesNotExist:
+            return None
+
+    def get(self, request, username, format=None):
+
+        found_user = self.find_user(username)
+        if found_user is None:
             return Response(status=404)
 
         serializer = serializers.UserProfileSerializer(found_user)
 
         return Response(data=serializer.data, status=200)
+
+    def put(self, request, username, format=None):
+
+        user = request.user
+
+        found_user = self.find_user(username)
+        if found_user is None:
+            return Response(status=404)
+        elif found_user.username != user.username :
+            return Response(status=401)
+
+        serializer = serializers.UserProfileSerializer(found_user, 
+            data = request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=200)
+        else:
+            return Response(data=serializer.errors,status=404)
+        
+
 
 class UserFollowers(APIView):
     def get(self, request, username, format=None):
@@ -104,3 +131,36 @@ class Search(APIView):
             return Response(data=serializer.data, status=200)
         else:
             return Response(status=400)
+
+class ChangePassword(APIView):
+    
+    def put(self, request, username, format=None):
+
+        user = request.user
+
+        current_password = request.data.get('current_password',None)
+        #if can't find data = None
+
+        if username == user.username:
+            if current_password is not None:
+                password_match = user.check_password(current_password)
+                            #Bool
+                if password_match:
+                    new_password = request.data.get('new_password',None)
+
+                    if new_password is not None:
+                        user.set_password(new_password)
+                        user.save()
+                        return Response(status=200)
+                    else:
+                        return Response(status=400)
+
+                else:
+                    return Response(status=400)
+
+            else:
+                return Response(status=400)
+        else:
+            return Response(status=401)
+
+        

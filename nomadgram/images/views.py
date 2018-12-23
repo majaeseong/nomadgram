@@ -32,6 +32,13 @@ class Feed(APIView):
         return Response(data = serializer.data)
 
 class ImageDetail(APIView):
+    #class 안의 function은 self 반드시 필요 
+    def find_own_image(self,image_id, user):
+        try:
+            found_image = models.Image.objects.get(id=image_id, creator=user)
+            return found_image
+        except models.Image.DoesNotExist:
+            return None
 
     def get(self, request, image_id, format=None):
 
@@ -40,6 +47,38 @@ class ImageDetail(APIView):
         serializer = serializers.ImageSerializer(found_image)
 
         return Response(data=serializer.data)
+
+    def put(self, request, image_id, format=None):
+
+        user=request.user
+        found_image = self.find_own_image(image_id, user)
+
+        if found_image is None:
+            return Response(status = 401)
+        
+        serializer = serializers.InputImageSerializer(found_image,
+            data=request.data, partial=True)
+            #partial -> 부분 저장, 필수요소들 다 입력하지 않아도 해당하는 것만 변경해줄 수 있게 해줌.
+        
+        if serializer.is_valid():
+            serializer.save(creator=user)
+            return Response(data=serializer.data, status=200)
+        else:
+            return Response(status=400)
+
+    def delete(self, request, image_id, format=None):
+
+        user=request.user
+        found_image = self.find_own_image(image_id, user)
+
+        if found_image is None:
+            return Response(status = 401)
+
+        found_image.delete()
+        return Response(status = 204)
+
+
+
 
 
 class LikeView(APIView):

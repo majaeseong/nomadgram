@@ -18,6 +18,11 @@ class Feed(APIView):
             for img in user_images:
                 image_list.append(img)
 
+        my_images = user.images.all()[:2]
+
+        for img in my_images:
+            image_list.append(img)
+
         sorted_list = sorted(image_list,key=lambda image : image.created_at, reverse=True)
         
         serializer = serializers.ImageSerializer(sorted_list, many=True)
@@ -98,6 +103,17 @@ class Comment(APIView):
     def delete(self, request, comment_id, format=None):
         try:
             comment = models.Comment.objects.get(id=comment_id, creator = request.user)
+            comment.delete()
+            return Response(status=204)
+        except models.Comment.DoesNotExist:
+            return Response(status=404)
+
+class ModerateComment(APIView):
+    def delete(self, request, image_id, comment_id, format=None):
+    
+        try:
+            comment = models.Comment.objects.get(id=comment_id,
+                image__id=image_id, image__creator=request.user)
             comment.delete()
             return Response(status=204)
         except models.Comment.DoesNotExist:

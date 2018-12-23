@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from . import models, serializers
 from nomadgram.notifications import views as notification_views
+from nomadgram.users import models as user_models
+from nomadgram.users import serializers as user_serializers
 
 class Feed(APIView):
 
@@ -29,8 +31,30 @@ class Feed(APIView):
 
         return Response(data = serializer.data)
 
+class ImageDetail(APIView):
+
+    def get(self, request, image_id, format=None):
+
+        found_image = invalid_image(image_id)
+
+        serializer = serializers.ImageSerializer(found_image)
+
+        return Response(data=serializer.data)
+
 
 class LikeView(APIView):
+
+    def get(self, request, image_id, format=None):
+
+        likes= models.Like.objects.filter(image__id = image_id)
+
+        users = user_models.User.objects.filter(id__in = likes.values('creator_id'))
+
+        serializer = user_serializers.ListUserSerializer(users, many=True)
+
+        return Response(data = serializer.data, status=200)
+
+
 
     def post(self, request, image_id,format=None):
 
@@ -91,13 +115,6 @@ class CommentOnImage(APIView):
         else:
             return Response(data = serializer.errors, status = 400)
 
-def invalid_image(id):
-    try:
-        found_image = models.Image.objects.get(id=id)
-        return found_image
-    except models.Image.DoesNotExist:
-        return Response(status=404)
-
 
 class Comment(APIView):
     def delete(self, request, comment_id, format=None):
@@ -137,3 +154,14 @@ class Search(APIView):
             return Response(data = serializer.data, status=200)
         else :
             return Response(status=400)
+
+
+
+
+
+def invalid_image(id):
+    try:
+        found_image = models.Image.objects.get(id=id)
+        return found_image
+    except models.Image.DoesNotExist:
+        return Response(status=404)

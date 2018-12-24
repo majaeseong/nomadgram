@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c6e5e675643a3b463e7e731bcb3e59495f4ed5bd93d158258be9b599c02c1e41"
+            "sha256": "cd5a4a6cf389d0d537978c66f51732d44c0db53268d182dfc1cf7c762310d8ac"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -268,6 +268,13 @@
             ],
             "index": "pypi",
             "version": "==4.10.0"
+        },
+        "django-rest-auth": {
+            "hashes": [
+                "sha256:ad155a0ed1061b32e3e46c9b25686e397644fd6acfd35d5c03bc6b9d2fc6c82a"
+            ],
+            "index": "pypi",
+            "version": "==0.9.3"
         },
         "django-taggit": {
             "hashes": [

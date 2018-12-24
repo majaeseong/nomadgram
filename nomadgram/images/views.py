@@ -31,6 +31,19 @@ class Feed(APIView):
 
         return Response(data = serializer.data)
 
+    def post(self,request, format=None):
+ 
+        user =request.user
+        serializer = serializers.InputImageSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(creator=user)
+            return Response(data=serializer.data, status=201)
+        else:
+            return Response(data=serializer.errors, status=400)
+
+
+
 class ImageDetail(APIView):
     #class 안의 function은 self 반드시 필요 
     def find_own_image(self,image_id, user):

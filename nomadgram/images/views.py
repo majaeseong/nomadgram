@@ -43,7 +43,6 @@ class Feed(APIView):
             return Response(data=serializer.errors, status=400)
 
 
-
 class ImageDetail(APIView):
     #class 안의 function은 self 반드시 필요 
     def find_own_image(self,image_id, user):

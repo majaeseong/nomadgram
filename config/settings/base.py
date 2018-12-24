@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
     'taggit_serializer',
     'rest_auth',
     'rest_auth.registration',
+    'allauth.socialaccount.providers.facebook',
 ]
 LOCAL_APPS = [
     'nomadgram.users.apps.UsersAppConfig',

@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'allauth.socialaccount.providers.facebook',
+    'corsheaders' #장고가 3000번으로 다이렉트로 가는 요청을 막아준다.
 ]
 LOCAL_APPS = [
     'nomadgram.users.apps.UsersAppConfig',
@@ -133,11 +134,13 @@ AUTH_PASSWORD_VALIDATORS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', #cors-headers
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 # STATIC
@@ -149,6 +152,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(APPS_DIR.path('static')),
+    str(ROOT_DIR.path('frontend','build','static')),
 ]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
@@ -271,3 +275,6 @@ REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 #get으로 데이터베이스의 모양을 바꿔서는 안되지만 편해서 쓴다?
 #logout을 하게 되면 데이터베이스의 모양이 바뀜.
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+CORS_ORIGIN_ALLOW_ALL = True

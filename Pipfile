@@ -38,6 +38,8 @@ django-taggit = "*"
 djangorestframework-jwt = "*"
 django-taggit-serializer = "*"
 django-rest-auth = "*"
+django-cors-headers = "==2.2.0"
+list = "*"
 
 [requires]
 python_version = "3.7"

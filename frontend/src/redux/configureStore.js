@@ -1,21 +1,39 @@
-import {createStore, combineReducers, applyMiddleware} from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import users from "redux/modules/users";
+import { createBrowserHistory } from "history";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { connectRouter, routerMiddleware } from "connected-react-router";
+import user from "./modules/users";
+// import Reactotron from 'ReactotronConfig';
 
-const env =process.env.NODE_ENV;
-            //node js 의 정보
+const env = process.env.NODE_ENV;
 
-const middlewares = [thunk];
+export const history = createBrowserHistory();
 
-if(env==='development'){
-    const {logger} = require('redux-logger');
-    middlewares.push(logger);
+const middlewares = [thunk, routerMiddleware(history)];
+
+if (env === "development") {
+  const { logger } = require("redux-logger");
+  middlewares.push(logger);
 }
 
-const reducer = combineReducers({
-    users,
-});
+const reducer = history =>
+  combineReducers({
+    user,
+    router: connectRouter(history)
+  });
 
-let store = initialState => createStore(reducer, applyMiddleware(...middlewares));
-                                                             //[1,2,3]->(1,2,3) unpack
+let store;
+
+if (env === "development") {
+  store = initialState =>
+    createStore(
+      reducer(history),
+      composeWithDevTools(applyMiddleware(...middlewares))
+    );
+} else {
+  store = initialState =>
+    createStore(reducer(history), applyMiddleware(...middlewares));
+}
+
 export default store();
